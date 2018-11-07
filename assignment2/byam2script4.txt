@@ -1,0 +1,40 @@
+USE byam2assign2db;
+
+-- Show all table data
+SELECT * FROM agent;
+SELECT * FROM customer;
+SELECT * FROM product;
+SELECT * FROM purchases;
+
+-- Drop view in case it already exists
+DROP VIEW IF EXISTS CustomerView;
+
+-- Create customer view
+CREATE VIEW CustomerView AS
+SELECT fnamec, lnamec, description, quantity, itemcost, (quantity * itemcost) AS "TotalCost" FROM product
+INNER JOIN purchases ON product.productid = purchases.productid
+INNER JOIN customer ON customer.customerid = purchases.customerid;
+
+-- Display the view
+SELECT * FROM CustomerView;
+
+-- Show rows where customer spent over 100 dollars
+SELECT * FROM CustomerView
+WHERE TotalCost > 100;
+
+-- Delete product
+DELETE FROM product
+WHERE description = "Sneakers";
+
+-- Show that product is no longer in table
+SELECT * FROM product;
+
+-- Delete agents from Springfield
+DELETE FROM agent WHERE citya = "Springfield";
+
+-- Show that agents were not deleted
+SELECT * FROM agent;
+
+-- The rows were not deleted because agentid is a foreign key for the customer table, which would cause issues with referencing
+
+

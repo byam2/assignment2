@@ -1,0 +1,30 @@
+SHOW DATABASES;
+
+-- Delete database if it exists
+DROP DATABASE IF EXISTS byam2assign2db;
+
+-- Create database
+CREATE DATABASE byam2assign2db;
+USE byam2assign2db;
+
+-- TA Access Lines
+GRANT USAGE ON *.* TO 'ta'@'localhost';
+DROP USER 'ta'@'localhost';
+CREATE USER 'ta'@'localhost' IDENTIFIED BY 'cs3319';
+GRANT ALL PRIVILEGES ON byam2assign2db.* TO 'ta'@'localhost';
+FLUSH PRIVILEGES;
+
+SHOW TABLES;
+
+-- Product Table
+CREATE TABLE product (productid VARCHAR(2) NOT NULL, description VARCHAR(20), itemcost INT NOT NULL, quantity INT NOT NULL, PRIMARY KEY(productid));
+
+-- Agent Table
+CREATE TABLE agent (agentid VARCHAR(2) NOT NULL, fnamea VARCHAR(30), lnamea VARCHAR(30), citya VARCHAR(15), commission INT NOT NULL, PRIMARY KEY (agentid));
+
+-- Customer Table
+CREATE TABLE customer (customerid VARCHAR(2), fnamec VARCHAR(30), lnamec VARCHAR(30),cityc VARCHAR(15), phonenum VARCHAR(8), PRIMARY KEY (customerid), dealtby VARCHAR(2), FOREIGN KEY (dealtby) REFERENCES agent(agentid));
+
+-- Purchases Table
+CREATE TABLE purchases (productid VARCHAR(2) NOT NULL, customerid VARCHAR(2) NOT NULL, purchquantity INT NOT NULL, PRIMARY KEY (productid, customerid), FOREIGN KEY (productid) REFERENCES product(productid), FOREIGN KEY (customerid) REFERENCES customer(customerid));
+SHOW TABLES;

@@ -1,0 +1,115 @@
+Warning: Using a password on the command line interface can be insecure.
+ERROR 1451 (23000) at line 33: Cannot delete or update a parent row: a foreign key constraint fails (`byam2assign2db`.`customer`, CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`dealtby`) REFERENCES `agent` (`agentid`))
+--------------
+SELECT * FROM agent
+--------------
+
+agentid	fnamea	lnamea	citya	commission
+11	Regis	Philbin	Boston	33
+12	Rosie	Cox	Ottawa	50
+22	Courtney	Cox	New York	25
+23	Brian	Yam	Victoria	89
+33	David	Letterman	Bedrock	100
+66	Rosie	ODonnell	Ottawa	100
+99	Hugh	Grant	Springfield	16
+--------------
+SELECT * FROM customer
+--------------
+
+customerid	fnamec	lnamec	cityc	phonenum	dealtby
+10	Barney	Rubble	Boston	777-1234	11
+12	Monty	Burns	Springfield	789-0000	99
+13	Wonder	Woman	Kypto	888-1234	33
+14	Peter	Griffens	Providence	987-4567	99
+15	Fred	Flintstone	Boston	777-2345	11
+21	Homer	Simpson	Springfield	686-8956	99
+31	Sideshow	Bob	Springfield	686-5555	66
+--------------
+SELECT * FROM product
+--------------
+
+productid	description	itemcost	quantity
+11	Bike	150	200
+12	Socks	2	100
+43	Sneakers	34	18
+66	Elbow pads	14	120
+78	Knee Pads	12	70
+88	Roller Blades	75	89
+99	Helmet	29	30
+--------------
+SELECT * FROM purchases
+--------------
+
+productid	customerid	purchquantity
+12	21	14
+12	31	5
+66	14	19
+66	15	2
+66	21	10
+66	31	5
+78	15	2
+78	31	5
+99	21	20
+99	31	5
+--------------
+DROP VIEW IF EXISTS CustomerView
+--------------
+
+--------------
+CREATE VIEW CustomerView AS
+SELECT fnamec, lnamec, description, quantity, itemcost, (quantity * itemcost) AS "TotalCost" FROM product
+INNER JOIN purchases ON product.productid = purchases.productid
+INNER JOIN customer ON customer.customerid = purchases.customerid
+--------------
+
+--------------
+SELECT * FROM CustomerView
+--------------
+
+fnamec	lnamec	description	quantity	itemcost	TotalCost
+Peter	Griffens	Elbow pads	120	14	1680
+Fred	Flintstone	Elbow pads	120	14	1680
+Fred	Flintstone	Knee Pads	70	12	840
+Homer	Simpson	Socks	100	2	200
+Homer	Simpson	Elbow pads	120	14	1680
+Homer	Simpson	Helmet	30	29	870
+Sideshow	Bob	Socks	100	2	200
+Sideshow	Bob	Elbow pads	120	14	1680
+Sideshow	Bob	Knee Pads	70	12	840
+Sideshow	Bob	Helmet	30	29	870
+--------------
+SELECT * FROM CustomerView
+WHERE TotalCost > 100
+--------------
+
+fnamec	lnamec	description	quantity	itemcost	TotalCost
+Peter	Griffens	Elbow pads	120	14	1680
+Fred	Flintstone	Elbow pads	120	14	1680
+Fred	Flintstone	Knee Pads	70	12	840
+Homer	Simpson	Socks	100	2	200
+Homer	Simpson	Elbow pads	120	14	1680
+Homer	Simpson	Helmet	30	29	870
+Sideshow	Bob	Socks	100	2	200
+Sideshow	Bob	Elbow pads	120	14	1680
+Sideshow	Bob	Knee Pads	70	12	840
+Sideshow	Bob	Helmet	30	29	870
+--------------
+DELETE FROM product
+WHERE description = "Sneakers"
+--------------
+
+--------------
+SELECT * FROM product
+--------------
+
+productid	description	itemcost	quantity
+11	Bike	150	200
+12	Socks	2	100
+66	Elbow pads	14	120
+78	Knee Pads	12	70
+88	Roller Blades	75	89
+99	Helmet	29	30
+--------------
+DELETE FROM agent WHERE citya = "Springfield"
+--------------
+

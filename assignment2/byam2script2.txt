@@ -1,0 +1,88 @@
+-- select database for assignment2
+SHOW databases;
+USE byam2assign2db;
+
+-- load data file
+LOAD DATA LOCAL INFILE 'loaddatafall2018.txt' INTO TABLE product
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+(productid, description, itemcost, quantity);
+
+-- prove loaded
+SELECT * FROM product;
+
+-- product inserts
+INSERT INTO product VALUES('66','Elbow pads','14.25','120');
+INSERT INTO product VALUES('43','Sneakers','34.00','18');
+
+-- agent inserts
+INSERT INTO agent VALUES('99','Hugh','Grant','Springfield','16');
+INSERT INTO agent VALUES('22','Courtney','Cox','New York','25');
+INSERT INTO agent VALUES('66','Rosie','ODonnell','Ottawa','100');
+INSERT INTO agent VALUES('33','David','Letterman','Bedrock','100');
+INSERT INTO agent VALUES('11','Regis','Philbin','Boston','33');
+INSERT INTO agent VALUES('12','Rosie','Cox','Ottawa','50');
+INSERT INTO agent VALUES('23','Brian','Yam','Victoria','89');
+
+-- customer inserts with agent info
+INSERT INTO customer VALUES('21','Homer','Simpson','Springfield','686-8956','99');
+INSERT INTO customer VALUES('31','Sideshow','Bob','Springfield','686-5555','66');
+INSERT INTO customer VALUES('12','Monty','Burns','Springfield','789-0000','99');
+INSERT INTO customer VALUES('15','Fred','Flintstone','Bedrock','777-2345','11');
+INSERT INTO customer VALUES('13','Super','Man','Kypto','888-1234','33');
+INSERT INTO customer VALUES('10','Barney','Rubble','Bedrock','777-1234','11');
+INSERT INTO customer VALUES('14','Peter','Griffens','Providence','987-4567','99');
+
+-- purchases inserts
+INSERT INTO purchases VALUES('99','21','20');
+INSERT INTO purchases VALUES('12','21','14');
+INSERT INTO purchases VALUES('66','21','10');
+INSERT INTO purchases VALUES('78','31','4');
+INSERT INTO purchases VALUES('12','31','2');
+INSERT INTO purchases VALUES('99','31','1');
+INSERT INTO purchases VALUES('66','31','2');
+INSERT INTO purchases VALUES('66','15','2');
+INSERT INTO purchases VALUES('78','15','2');
+INSERT INTO purchases VALUES('66','14','19');
+
+-- agent customer info updates
+UPDATE customer SET dealtby = '99'
+WHERE customerid = '21';
+UPDATE customer SET dealtby = '99'
+WHERE customerid = '12';
+UPDATE customer SET dealtby = '99'
+WHERE customerid = '14';
+UPDATE customer SET dealtby = '33'
+WHERE customerid = '13';
+UPDATE customer SET dealtby = '11'
+WHERE customerid = '10';
+UPDATE customer SET dealtby = '11'
+WHERE customerid = '15';
+UPDATE customer SET dealtby = '66'
+WHERE customerid = '31';
+
+-- prove that insertions worked
+SELECT * FROM product;
+SELECT * FROM agent;
+SELECT * FROM customer;
+SELECT * FROM purchases;
+
+-- change Super Man's name to Wonder Woman
+UPDATE customer SET fnamec = 'Wonder', lnamec = 'Woman'
+WHERE fnamec = 'Super' AND lnamec = 'Man';
+
+-- change Sideshow purchquantity to 5
+UPDATE purchases INNER JOIN customer ON purchases.customerid = customer.customerid
+SET purchases.purchquantity = '5'
+WHERE fnamec = 'Sideshow' AND lnamec = 'Bob';
+
+-- change Regis's customers' city
+UPDATE customer INNER JOIN agent ON customer.dealtby = agent.agentid
+SET customer.cityc = 'Boston'
+WHERE fnamea = 'Regis';
+
+-- show that updates worked
+SELECT * FROM product;
+SELECT * FROM agent;
+SELECT * FROM customer;
+SELECT * FROM purchases;

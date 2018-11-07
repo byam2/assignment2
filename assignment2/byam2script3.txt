@@ -1,0 +1,77 @@
+-- select database for assignment2
+SHOW databases;
+USE byam2assign2db;
+
+-- Query 1
+SELECT description FROM product;
+
+-- Query 2
+SELECT DISTINCT cityc FROM customer;
+
+-- Query 3
+SELECT * FROM agent
+ORDER BY citya;
+
+-- Query 4
+SELECT fnamec, lnamec FROM customer
+WHERE cityc = 'Springfield';
+
+-- Query 5
+SELECT lnamec FROM customer
+WHERE dealtby = '11';
+
+-- Query 6
+SELECT description FROM product
+WHERE description LIKE '%pad%' OR description LIKE '%Pad%';
+
+-- Query 7
+SELECT customer.lnamec, product.description, purchases.purchquantity
+FROM customer, product, purchases
+WHERE purchases.customerid = customer.customerid AND purchases.productid = product.productid;
+
+-- Query 8
+SELECT SUM(purchases.purchquantity) AS "Homer's Total Purchases"
+FROM purchases
+WHERE customerid = (SELECT customerid FROM customer WHERE fnamec = 'Homer');
+
+-- Query 9
+SELECT customer.fnamec, customer.lnamec, 
+SUM(purchases.purchquantity)
+FROM purchases INNER JOIN customer ON purchases.customerid = customer.customerid
+GROUP BY purchases.customerid;
+
+-- Query 10
+SELECT description, quantity
+FROM product
+WHERE productid NOT IN (SELECT productid FROM purchases);
+
+-- Query 11
+SELECT product.description, product.quantity FROM product 
+WHERE NOT EXISTS (SELECT productid FROM purchases
+INNER JOIN customer ON purchases.customerid = customer.customerid
+WHERE customer.fnamec= 'Fred' AND customer.lnamec = 'Flintstone'
+AND purchases.productid = product.productid);
+
+-- Query 12
+SELECT agent.fnamea, agent.lnamea, customer.fnamec, customer.lnamec
+FROM agent INNER JOIN customer on customer.dealtby = agent.agentid
+WHERE customer.cityc = agent.citya;
+
+-- Query 13
+SELECT SUM(purchases.purchquantity) AS "Number of Knee Pads Purchased"
+FROM purchases WHERE purchases.productid = '78';
+
+-- Query 14
+SELECT description FROM product
+INNER JOIN purchases ON product.productid = purchases.productid
+WHERE purchases.productid IN (
+SELECT productid 
+FROM purchases 
+GROUP BY productid 
+HAVING COUNT(*)>3);
+
+-- Query 15
+SELECT DISTINCT agent.fnamea, agent.lnamea FROM agent
+INNER JOIN customer ON agent.agentid = customer.dealtby
+INNER JOIN purchases ON purchases.customerid = customer.customerid
+WHERE purchases.productid = '78';
